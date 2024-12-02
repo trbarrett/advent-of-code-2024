@@ -13,7 +13,7 @@ let part1 (lstA, lstB) =
 
 let part2 (lstA, lstB) =
     let counts = List.countBy id lstB |> Map
-    lstA |> List.sumBy (fun x -> x * (counts |> Map.findOrDefault x 0))
+    lstA |> List.sumBy (fun x -> x * (counts |> Map.findOrDefault 0 x))
     // Correct Answer: 20719933, took: 290µs
 
 let lines =
@@ -23,6 +23,5 @@ let lines =
     |> List.unzip
 
 Puzzle.warmup part1 part2 lines // warm it up for more accurate timings
-
 Puzzle.measurePart1µs part1 lines
 Puzzle.measurePart2µs part2 lines

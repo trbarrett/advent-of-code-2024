@@ -269,7 +269,7 @@ module Map =
         let existing = m |> Map.tryFind key |> Option.defaultValue defaultValue
         m |> Map.add key (f existing)
         
-    let findOrDefault key defaultValue m =
+    let findOrDefault defaultValue key m =
         Map.tryFind key m |> Option.defaultValue defaultValue
 
 
