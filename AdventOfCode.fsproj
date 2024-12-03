@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="Day03.fsx" />
         <None Include="Helper.fsx" />
         <None Include="AStar.fsx" />
         <None Include="Dijkstra.fsx" />
