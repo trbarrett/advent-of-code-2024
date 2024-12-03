@@ -1,5 +1,3 @@
-#I __SOURCE_DIRECTORY__
-
 open System.Collections.Generic
 
 let rec private dijkstra' (neighbours : 'T -> ('T * int) list)
@@ -18,7 +16,7 @@ let rec private dijkstra' (neighbours : 'T -> ('T * int) list)
         then dijkstra' neighbours target visited frontier // we've already been here, continue
         else
 
-        visited.Add(curr, cost) |> ignore
+        visited.Add(curr, cost)
 
         // get the neighbours and their travel costs
         let adjacent =
@@ -44,7 +42,7 @@ let dijkstra (start : 'T) (target : 'T) (neighbours : 'T -> ('T * int) list) =
             neighbours
             (Some target)
             (new SortedDictionary<'T, int>())
-            (initialFrontier)
+            initialFrontier
 
     match costs.TryGetValue target with
     | true, cost -> Some cost
@@ -60,7 +58,7 @@ let dijkstraAllPaths (start : 'T) (neighbours : 'T -> ('T * int) list) =
             neighbours
             None
             (new SortedDictionary<'T, int>())
-            (initialFrontier)
+            initialFrontier
 
     costs |> Seq.map (fun kvp -> kvp.Key, kvp.Value) |> Map
 

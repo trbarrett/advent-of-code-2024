@@ -1,4 +1,4 @@
-#load "./Helper.fsx"
+#load "lib/Helper.fsx"
 open Helper
 
 // Day 2: Red-Nosed Reports
@@ -33,12 +33,12 @@ let part2 reports =
     |> List.filter (fun levels ->
         levels
         |> List.mapi (fun i _ ->  List.removeAt i levels |> isSafe)
-        |> List.exists (fun x -> x <> Unsafe))
+        |> List.exists ((<>) Unsafe))
     |> List.length
     // Correct Answer: 540, took: 3,006µs
 
 let lines =
-    Puzzle.readLines "day02.txt" |> Seq.toList
+    Puzzle.readLinesL "day02.txt"
     |> List.map (String.findMatching "\d+" >> List.map int)
 
 Puzzle.warmup part1 part2 lines // warm it up for more accurate timings

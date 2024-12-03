@@ -1,5 +1,3 @@
-#I __SOURCE_DIRECTORY__
-
 open System
 open System.Collections.Generic
 open System.Linq

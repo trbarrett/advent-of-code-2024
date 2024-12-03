@@ -1,4 +1,4 @@
-#load "./Helper.fsx"
+#load "lib/Helper.fsx"
 open Helper
 
 // Day 1: Historian Hysteria
@@ -17,7 +17,7 @@ let part2 (lstA, lstB) =
     // Correct Answer: 20719933, took: 290µs
 
 let lines =
-    Puzzle.readLines "day01.txt" |> Seq.toList
+    Puzzle.readLinesL "day01.txt"
     |> List.map (String.findMatching "\d+")
     |> List.map (fun [a; b] -> int a, int b )
     |> List.unzip

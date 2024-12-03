@@ -6,16 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="Day03.fsx" />
-        <None Include="Helper.fsx" />
-        <None Include="AStar.fsx" />
-        <None Include="Dijkstra.fsx" />
+        <None Include="lib\Helper.fsx" />
+        <None Include="lib\AStar.fsx" />
+        <None Include="lib\Dijkstra.fsx" />
         <None Include="Day01.fsx" />
         <None Include="Day02.fsx" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Expecto" Version="9.0.4" />
+        <None Include="Day03.fsx" />
     </ItemGroup>
 
 </Project>

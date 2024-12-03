@@ -1,4 +1,4 @@
-#load "./Helper.fsx"
+#load "lib/Helper.fsx"
 open Helper
 
 // Day 3: Mull It Over

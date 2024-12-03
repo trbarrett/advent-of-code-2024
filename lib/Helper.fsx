@@ -1,7 +1,4 @@
-#I __SOURCE_DIRECTORY__
-
 open System
-open System.Buffers
 open System.Text.RegularExpressions
 open System.IO
 open System.Collections.Generic
@@ -37,28 +34,28 @@ module Puzzle =
     let measurePart2µs f input = measurePartµs 2 f input
 
     let public readText inputName =
-        sprintf "%s/puzzledata/%s" __SOURCE_DIRECTORY__ inputName
+        sprintf "%s/../puzzledata/%s" __SOURCE_DIRECTORY__ inputName
         |> File.ReadAllText
 
     let public readLines inputName =
-        sprintf "%s/puzzledata/%s" __SOURCE_DIRECTORY__ inputName
+        sprintf "%s/../puzzledata/%s" __SOURCE_DIRECTORY__ inputName
         |> File.ReadLines
 
     let public readLinesL inputName =
-        sprintf "%s/puzzledata/%s" __SOURCE_DIRECTORY__ inputName
+        sprintf "%s/../puzzledata/%s" __SOURCE_DIRECTORY__ inputName
         |> File.ReadLines |> Seq.toList
 
     let public readLinesA inputName =
-        sprintf "%s/puzzledata/%s" __SOURCE_DIRECTORY__ inputName
+        sprintf "%s/../puzzledata/%s" __SOURCE_DIRECTORY__ inputName
         |> File.ReadAllLines
 
     let public readLinesWithHashComments inputName =
-        sprintf "%s/puzzledata/%s" __SOURCE_DIRECTORY__ inputName
+        sprintf "%s/../puzzledata/%s" __SOURCE_DIRECTORY__ inputName
         |> File.ReadLines
         |> Seq.filter (fun (str: String) -> not (str.StartsWith('#')))
 
     let public readLinesWithSlashComments inputName =
-        sprintf "%s/puzzledata/%s" __SOURCE_DIRECTORY__ inputName
+        sprintf "%s/../puzzledata/%s" __SOURCE_DIRECTORY__ inputName
         |> File.ReadLines
         |> Seq.filter (fun (str: String) -> not (str.StartsWith("//")))
 
