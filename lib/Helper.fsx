@@ -407,6 +407,11 @@ module String =
         arr.[index] <- char
         String arr
 
+module Pos =
+    let offset (x, y) (a, b) = (x + a, y + b)
+
+    let offsetMany pos xs = xs |> Array.map (offset pos)
+
 module ArrayOfArrays =
     let tryFindIndex predicate (aoa : 'T[][]) =
         let rec loop rowNo =
@@ -437,15 +442,62 @@ module ArrayOfArrays =
         elif colNo < 0 || colNo >= aoa[rowNo].Length then None
         else Some ((rowNo, colNo), aoa.[rowNo].[colNo])
 
+    /// Gets the value at each of the given positions. When it cannot get a
+    /// value, it skips it instead
+    let getMany (aoa : 'T[][]) positions =
+        positions |> Array.choose (fun pos -> tryGet pos aoa)
+
     let map (mapping: 'T -> 'U) (aoa : 'T[][]) =
         [| for rowNo in 0..(aoa.Length - 1) do
                [| for colNo in 0..(aoa[rowNo].Length - 1) do
                       yield mapping aoa.[rowNo].[colNo] |] |]
 
-    let mapi (mapping: int -> int -> 'T -> 'U) (aoa : 'T[][]) =
+    let mapi (mapping: (int * int) -> 'T -> 'U) (aoa : 'T[][]) =
         [| for rowNo in 0..(aoa.Length - 1) do
                [| for colNo in 0..(aoa[rowNo].Length - 1) do
-                      yield (mapping rowNo colNo aoa.[rowNo].[colNo]) |] |]
+                      yield (mapping (rowNo, colNo) aoa.[rowNo].[colNo]) |] |]
+
+    let filter (predicate: 'T -> bool) (aoa : 'T[][]) =
+        [| for rowNo in 0..(aoa.Length - 1) do
+               [| for colNo in 0..(aoa[rowNo].Length - 1) do
+                      let x = aoa.[rowNo].[colNo]
+                      if predicate x then yield x |] |]
+
+    let filteri (predicate: (int * int) -> 'T -> bool) (aoa : 'T[][]) =
+        [| for rowNo in 0..(aoa.Length - 1) do
+               [| for colNo in 0..(aoa[rowNo].Length - 1) do
+                      let x = aoa.[rowNo].[colNo]
+                      if predicate (rowNo, colNo) x then yield x |] |]
+
+    let fold (folder: 'U -> 'T -> 'U) (state: 'U) (aoa : 'T[][]) =
+        (state, aoa) ||> Array.fold (fun state row ->
+            (state, row) ||> Array.fold folder)
+
+    let foldi (folder: (int * int) -> 'U -> 'T -> 'U) (state: 'U) (aoa : 'T[][]) =
+        (state, aoa) ||> Array.foldi (fun rowNo state row ->
+            (state, row) ||> Array.foldi (fun colNo state x ->
+                folder (rowNo, colNo) state x))
+
+    let inline sum (aoa : ^T[][]) =
+        let zero = LanguagePrimitives.GenericZero<^T>
+        (zero, aoa) ||> fold (+)
+
+    let inline sumBy (projection: ^T -> ^U) (aoa : ^T[][]) =
+        let zero = LanguagePrimitives.GenericZero<^U>
+        (zero, aoa) ||> fold (fun acc x -> projection x + acc)
+
+    /// Given a starting point: `start`, walk x `steps`, moving `delta` each time
+    let walk start delta steps (aoa : 'T[][]) =
+        (start, steps)
+        |> Array.unfold (fun (pos, remainingSteps) ->
+            if remainingSteps = 0 then None
+            else
+                tryGet pos aoa
+                |> Option.map (fun item ->
+                    item, (Pos.offset pos delta, remainingSteps - 1)))
+
+    /// The amount of items in the whole ArrayOfArrays
+    let length (aoa : 'T[][]) = aoa |> Array.sumBy Array.length
 
     let transpose = Array.transpose
 
