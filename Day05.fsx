@@ -13,7 +13,8 @@ let rec fixPages precedingPagesRules remainingPages =
     | [] -> []
     | x::xs ->
         let mustPrecede = precedingPagesRules |> Map.findOrDefault Set.empty x
-        let preceding, valid = xs |> List.partition (fun x -> Set.contains x mustPrecede)
+        let preceding, valid =
+            xs |> List.partition (fun x -> Set.contains x mustPrecede)
         if not (List.isEmpty preceding)
         then fixPages precedingPagesRules (preceding @ [x] @ valid)
         else x :: (fixPages precedingPagesRules xs)

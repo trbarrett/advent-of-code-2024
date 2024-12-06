@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <None Include="Day05.fsx" />
+        <None Include="Day06.fsx" />
         <None Include="lib\Helper.fsx" />
         <None Include="lib\AStar.fsx" />
         <None Include="lib\Dijkstra.fsx" />

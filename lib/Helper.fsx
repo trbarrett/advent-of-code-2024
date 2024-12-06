@@ -457,6 +457,9 @@ module ArrayOfArrays =
                [| for colNo in 0..(aoa[rowNo].Length - 1) do
                       yield (mapping (rowNo, colNo) aoa.[rowNo].[colNo]) |] |]
 
+    let set pos value (aoa : 'T[][]) =
+        aoa |> mapi (fun pos' value' -> if pos' = pos then value else value')
+
     let filter (predicate: 'T -> bool) (aoa : 'T[][]) =
         [| for rowNo in 0..(aoa.Length - 1) do
                [| for colNo in 0..(aoa[rowNo].Length - 1) do
