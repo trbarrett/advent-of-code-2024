@@ -6,8 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="Day05.fsx" />
-        <None Include="Day06.fsx" />
         <None Include="lib\Helper.fsx" />
         <None Include="lib\AStar.fsx" />
         <None Include="lib\Dijkstra.fsx" />
@@ -15,6 +13,9 @@
         <None Include="Day02.fsx" />
         <None Include="Day03.fsx" />
         <None Include="Day04.fsx" />
+        <None Include="Day05.fsx" />
+        <None Include="Day06.fsx" />
+        <None Include="Day07.fsx" />
     </ItemGroup>
 
 </Project>
