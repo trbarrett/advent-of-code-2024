@@ -19,7 +19,7 @@ module Puzzle =
     let measurePartms partN f input =
         let sw = startStopwatch ()
         let result = f input
-        printfn $"Part {partN} result: {result} took: {sw.ElapsedMilliseconds:N0}ms"
+        printfn $"Part {partN} result: {result}, took: {sw.ElapsedMilliseconds:N0}ms"
 
     let measurePart1ms f input = measurePartms 1 f input
     let measurePart2ms f input = measurePartms 2 f input
@@ -28,7 +28,7 @@ module Puzzle =
         let sw = startStopwatch ()
         let result = f input
         let µs = sw.ElapsedTicks / 1000L
-        printfn $"Part {partN} result: {result} took: {µs:N0}µs"
+        printfn $"Part {partN} result: {result}, took: {µs:N0}µs"
 
     let measurePart1µs f input = measurePartµs 1 f input
     let measurePart2µs f input = measurePartµs 2 f input
@@ -105,7 +105,7 @@ module Set =
             printfn "")
 
 module List =
-    let permutationsWithReplacement (values : 'a list) times =
+    let permutationsWithReplacement times (values : 'a list) =
         let splitValues = values |> List.map List.singleton
         let folder acc values =
             List.allPairs acc values
@@ -113,12 +113,12 @@ module List =
         List.fold folder splitValues (List.replicate (times - 1) values)
 
     // When the order DOES matter, it is a permutation
-    let rec permutations (values : Set<'a>) count : 'a list list =
+    let rec permutations count (values : Set<'a>) : 'a list list =
         if count = 0 then [[]]
         else
             values |> List.ofSeq
             |> List.collect (fun x ->
-               permutations (Set.remove x values) (count - 1)
+               permutations (count - 1) (Set.remove x values) 
                |> List.map (fun xs -> x::xs))
 
     // When the order doesn't matter, it is a combination
@@ -237,6 +237,9 @@ module Map =
 
     let mapValues f m =
        m |> Map.map (fun _ v -> f v)
+       
+    let collectValues f m =
+        Seq.collect f (Map.values m)
 
     let merge f mapA mapB =
        let allKeys = [mapA; mapB] |> Seq.collect keys |> Seq.distinct
@@ -272,6 +275,9 @@ module Map =
         
     let findOrDefault defaultValue key m =
         Map.tryFind key m |> Option.defaultValue defaultValue
+    
+    let printWith f m =
+        m |> Map.iter (fun k v -> printfn $"{k}: {f v}")
 
 
 module Array =
@@ -296,6 +302,13 @@ module Array =
     let findIndexes f xs =
         (xs, [])
         ||> foldBacki (fun i x acc -> if (f x) then i::acc else acc)
+        
+    let groupByTuple (xs : ('a * 'b) []) =
+        xs
+        |> Array.groupBy fst
+        |> Array.map (fun (k,v) -> k, v |> Array.map snd)
+    
+    let crossJoin xs ys = xs |> Array.collect(fun a -> ys |> Array.map (mkTuple a))
 
     let split separator arr =
         let splitPoints = findIndexes ((=) separator) arr
@@ -411,6 +424,13 @@ module Pos =
     let offset (x, y) (a, b) = (x + a, y + b)
 
     let offsetMany pos xs = xs |> Array.map (offset pos)
+    
+    let difference (x, y) (x', y') = (x - x', y - y')
+    
+    let neg (x, y) = (-x, -y)
+    
+    let isWithin ((xMin, yMin), (xMax, yMax)) (x, y) =
+        x >= xMin && x <= xMax && y >= yMin && y <= yMax
 
 module ArrayOfArrays =
     let tryFindIndex predicate (aoa : 'T[][]) =
@@ -428,6 +448,13 @@ module ArrayOfArrays =
                for colNo in 0..(aoa[rowNo].Length - 1) do
                    if (predicate aoa.[rowNo].[colNo])
                       then yield rowNo, colNo |]
+        
+    let findIndexesAndValues predicate (aoa : 'T[][]) =
+        [| for rowNo in 0..(aoa.Length - 1) do
+               for colNo in 0..(aoa[rowNo].Length - 1) do
+                   let value = aoa.[rowNo].[colNo]
+                   if (predicate value)
+                      then yield (rowNo, colNo), value |]
 
     let get (rowNo, colNo) (aoa : 'T[][]) =
         aoa.[rowNo].[colNo]
@@ -501,6 +528,14 @@ module ArrayOfArrays =
 
     /// The amount of items in the whole ArrayOfArrays
     let length (aoa : 'T[][]) = aoa |> Array.sumBy Array.length
+    
+    let maxExtents (aoa : 'T[][]) =
+        let maxColNo = aoa |> Array.map Array.length |> Array.max
+        ((0,0),(Array.length aoa - 1, maxColNo - 1))
+    
+    let isPointWithin (aoa : 'T[][]) (rowNo, colNo) =
+        if rowNo < 0 || rowNo >= Array.length aoa then false
+        else colNo >= 0 && colNo < Array.length aoa.[rowNo]
 
     let transpose = Array.transpose
 
