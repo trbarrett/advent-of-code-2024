@@ -159,6 +159,16 @@ module List =
         match lst with
         | [] -> []
         | lst -> List.removeAt (List.length lst - 1) lst
+        
+    let extractLast lst =
+        let rec inner lst acc =
+            match lst with
+            | [] -> failwith "Cannot extract last from an empty list"
+            | [x] -> x, acc
+            | x::xs -> inner xs (x::acc)
+        
+        let last, remainder = inner lst []
+        last, List.rev remainder
 
     /// Given a list of tuples, and treating each tuple as key/value pairs,
     /// this function will combine the values where there are duplicate pairs
@@ -351,7 +361,12 @@ module Seq =
 
     let foldi fold state source  =
        ((state, 0), source)
-       ||> Seq.fold(fun (acc,i) c -> (fold i acc c,i + 1))
+       ||> Seq.fold(fun (acc,i) x -> (fold i acc x,i + 1))
+       |> fst
+       
+    let foldBacki folder source state  =
+       (source, (state, Seq.length source - 1))
+       ||> Seq.foldBack(fun x (acc,i) -> (folder i x acc, i - 1))
        |> fst
 
     let crossJoin xs ys = xs |> Seq.collect(fun a -> ys |> Seq.map (mkTuple a))
@@ -561,6 +576,8 @@ let (|Capture|_|) regex (s:string) =
 
 module Char =
     let digitToInt (c : char) = int c - int '0'
+    
+    let digitToInt64 (c : char) = int64 c - int64 '0'
 
 module Int32 =
     let tryParse (str : string) =
