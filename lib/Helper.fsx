@@ -489,6 +489,12 @@ module ArrayOfArrays =
     let getMany (aoa : 'T[][]) positions =
         positions |> Array.choose (fun pos -> tryGet pos aoa)
 
+    let getManyi (aoa : 'T[][]) positions =
+        positions
+        |> Array.choose (fun pos ->
+            tryGet pos aoa
+            |> Option.map (fun x -> (pos, x)))
+
     let map (mapping: 'T -> 'U) (aoa : 'T[][]) =
         [| for rowNo in 0..(aoa.Length - 1) do
                [| for colNo in 0..(aoa[rowNo].Length - 1) do
