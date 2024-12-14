@@ -103,6 +103,17 @@ module Set =
                 elif Set.contains (x,y) tails then printf "#"
                 else printf ".")
             printfn "")
+        
+    let printSetPointsBottomToTop64 tails =
+        let (xMin, xMax, yMin, yMax) = getExtents tails
+        [yMin..yMax]
+        |> List.iter (fun y ->
+            [xMin..xMax]
+            |> List.iter (fun x ->
+                if (x,y) = (0L,0L) then printf "o"
+                elif Set.contains (x,y) tails then printf "#"
+                else printf ".")
+            printfn "")
 
 module List =
     let permutationsWithReplacement times (values : 'a list) =

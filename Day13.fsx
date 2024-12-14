@@ -1,7 +1,7 @@
 #load "lib/Helper.fsx"
 open Helper
 
-// Day 13:
+// Day 13: Claw Contraption
 //
 // Use super basic linear algebra to figure out how many button presses for A
 // and B are needed to get to the result
