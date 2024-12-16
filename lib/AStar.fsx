@@ -47,6 +47,8 @@ let astar start goal neighbours h =
                      (cameFrom : Dictionary<_,_>)
                      (gScore : Dictionary<_,double>)
                      (fScore : SortedDictionary<_,SortedSet<_>>) =
+        if fScore.Count = 0 then None
+        else
         let fScoreHead = fScore.First()
         let current = fScoreHead.Value.Min
         if fScoreHead.Value.Count > 1
